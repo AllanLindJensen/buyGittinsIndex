@@ -19,3 +19,5 @@ Hvis du vil prøve dem kan du
 	b) Vælg node, for eksempel DanishLightning.dk
 	c) Et beløb, for eksempel 50 mBTC.
 	d) Vent på at aftalen er bekræftet 3 gange på Blockchainen.
+
+Der er hjælp at hente til forbindelsen til min Lightning Network node: http://dev.lightning.community/tutorial/index.html. Vi skal bruge punkt 3 og 4 i denne tutorial.
