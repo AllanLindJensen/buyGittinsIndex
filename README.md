@@ -23,3 +23,6 @@ Hvis du vil prøve dem kan du
 Der er hjælp at hente til forbindelsen til min Lightning Network node: http://dev.lightning.community/tutorial/index.html. Vi skal bruge punkt 3 og 4 i denne tutorial.
 
 Hvordan kommer vi i gang? Vi kan prøve at programmere clienten i index.php og få udført en simpel kommando af LND (lightning netowrk daemon'en). Eller vi kan sætte en server op der modtager en streng og sender den tilbage med et "Hallo, " på. Hvad siger du?
+14. marts: Ved at gøre alt på siden
+https://grpc.io/docs/quickstart/php.html#run-a-grpc-application
+fik jeg serveren greeter_server.js til at køre i en terminal, og den virkede. 
