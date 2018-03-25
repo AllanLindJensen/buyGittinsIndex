@@ -1,0 +1,201 @@
+
+<!DOCTYPE HTML>  
+<html>
+<head>
+    <title>
+        Danish Lightning
+    </title>
+    <style>
+        .error {color: #FF0000;}
+        .header {
+            background:#a0a0a0;
+            color:aqua;
+            padding: 2em;
+            text-align:center;
+        }
+        .butt {
+            background:#a0a0a0;
+            color:aqua;
+            padding: 1em;
+        }
+	input[type=radio] + label, input[type=checkbox] + label {
+		margin-left: 0.1em;
+		margin-right: 0.7em;
+        }
+    </style>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="application/javascript" src="qrcodegen.js"></script>
+    <script type="application/javascript" src="qrcodegen-demo.js"></script>
+</head>
+
+<body onload="hideBill();">  
+    
+
+    <script>
+        function hideBill() {
+            var billPaid = false;
+            temp = document.getElementById("divBill");
+            if (billPaid) {temp.style.display = "none";} 
+            else {temp.style.display = "block";}
+        }
+    </script>
+
+<h1 class="header"> 
+    Buy a Gittins Index using Lightning Network on Testnet
+</h1>
+<h3>
+    Gittins Index
+</h3>
+<div>
+    You may wonder, what a Gittins Index is. Google or
+    <a href="https://sites.google.com/site/allanlindjensen/home/gittins-index">
+        look here
+    </a>.
+    <br>
+    But do you really care, as long as you get to spend your tBTCs?
+</div>
+<br>
+<h3>
+    Fill out the form
+</h3>
+<form method="post" action="/index.php">  
+    All three fields are required
+    <br><br>
+    Discount factor (1..99): <input type="int" name="fdisc" value="">
+    <span class="error"> </span> per cent.
+    <br><br>
+    Number of successes: <input type="int" name="fsucc" value="">
+    <span class="error"> </span>
+    <br><br>
+    Number of failures: <input type="int" name="ffail" value="">
+    <span class="error"></span>
+    <br><br>
+    <button class="butt" name="buy" value="ORDER">
+        Order the index
+    </button>
+    <button class="butt" name="reset" style="color:red" value="RESET">
+            Reset the Page
+    </button>
+    <button class="butt" name="paying" value="CHECK_PAY">
+        Press when the bill shows to check for payment
+    </button>
+</form>
+
+<div id="divBill">
+<h2>
+    Pay the bill
+</h2>
+
+    <textarea id="text-input" style="color:green" rows="3" cols="80"> 
+ Waiting for button 'Order the Index' to be pressed.</textarea>
+    <br><br>
+    <div style="color:blueviolet">
+        Price 0.1 FIN = 0.01 mBTC
+    </div>
+    <br>
+    <div>
+        <button class="butt" onclick="cp2cb()">
+            Copy to Clipboard
+        </button>
+    </div>
+
+    
+    <br>
+    <form action="#" method="get" onsubmit="return false;">
+	<table style="width:100%">
+            <tbody>
+                <tr>
+                    <td>
+                        <canvas id="qrcode-canvas" style="padding:1em; background-color:#E8E8E8"></canvas>
+                        <svg id="qrcode-svg" style="width:30em; height:30em; padding:1em; background-color:#E8E8E8">
+                                <rect width="100%" height="100%" fill="#FFFFFF" stroke-width="0"></rect>
+                                <path d="" fill="#000000" stroke-width="0"></path>
+                        </svg>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="display:none">
+                        <input type="radio" name="errcorlvl" id="errcorlvl-low" onchange="redrawQrCode();" checked="checked"><label for="errcorlvl-low">Low</label>
+                        <input type="radio" name="errcorlvl" id="errcorlvl-medium" onchange="redrawQrCode();"><label for="errcorlvl-medium">Medium</label>
+                        <input type="radio" name="errcorlvl" id="errcorlvl-quartile" onchange="redrawQrCode();"><label for="errcorlvl-quartile">Quartile</label>
+                        <input type="radio" name="errcorlvl" id="errcorlvl-high" onchange="redrawQrCode();"><label for="errcorlvl-high">High</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="display:none">
+                        <input type="radio" name="output-format" id="output-format-bitmap" onchange="redrawQrCode();" checked="checked"><label for="output-format-bitmap">Bitmap</label>
+                        <input type="radio" name="output-format" id="output-format-vector" onchange="redrawQrCode();"><label for="output-format-vector">Vector</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="display:none"><input type="number" value="4" min="0" max="100" step="1" id="border-input" style="width:4em" oninput="redrawQrCode();"> modules</td>
+                </tr>
+                <tr id="scale-row">
+                    <td style="display:none"><input type="number" value="8" min="1" max="30" step="1" id="scale-input" style="width:4em" oninput="redrawQrCode();"> pixels per module</td>
+                </tr>
+                <tr>
+                    <td style="display:none">Minimum = <input type="number" value="1" min="1" max="40" step="1" id="version-min-input" style="width:4em" oninput="handleVersionMinMax('min');">, maximum = <input type="number" value="40" min="1" max="40" step="1" id="version-max-input" style="width:4em" oninput="handleVersionMinMax('max');"></td>
+                </tr>
+                <tr>
+                    <td style="display:none"><input type="number" value="-1" min="-1" max="7" step="1" id="mask-input" style="width:4em" oninput="redrawQrCode();"> (−1 for automatic, 0 to 7 for manual)</td>
+                </tr>
+                <tr>
+                    <td style="display:none"><input type="checkbox" checked="checked" id="boost-ecc-input" onchange="redrawQrCode();"><label for="boost-ecc-input">Increase <abbr title="error-correcting code">ECC</abbr> level within same version</label></td>
+                </tr>
+                <tr style="display:none">
+                    <td id="statistics-output" style="white-space:pre"></td>
+                </tr>
+                <tr id="svg-xml-row"  style="display:none">
+
+                    <td>
+                            <textarea id="svg-xml-output" readonly="readonly" style="width:100%; max-width:50em; height:15em; font-family:monospace"></textarea>
+                    </td>
+                </tr>
+            </tbody>
+	</table>
+    </form>
+</div>
+    
+    <script type="text/javascript">
+        function cp2cb() {
+            document.getElementById("text-input").select();
+            document.execCommand("Copy");
+            alert("Copied the text in the bill window");        
+        }
+        redrawQrCode();
+    </script>
+
+<h2>
+    Your Index
+</h2>
+    <div>
+    Discount factor : 0.    <br>
+    Number of successes:     <br>
+    Number of failures:     <br><br>
+    </div>
+    <div>
+        Your gittins Index, the fair value of trying the bandit, based
+        on your discount and experience is
+        <output class="butt">0.still unknown</output>
+        in unites, where the value you attribute to an average success is
+        unity, and the value of an average failure is nought.        
+    </div>
+
+<h2>
+    Circular Economy
+</h2>
+    <div>
+        In an ideal world, the economy is circular; everybody receives
+        as much money as she uses. Were this the case, it would rarely
+        be neccessary to open new channels from the wallets. Like Yalls.org,
+        I would like to pay back, what this service earns.       
+    </div>
+    <div>
+        So if this service becomes popular, I will try to pay back
+        over the Lightning Network.
+        First, the shop must work, though.
+    </div>
+
+ 
+</body>
+</html>
