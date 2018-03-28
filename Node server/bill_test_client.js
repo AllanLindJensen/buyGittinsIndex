@@ -16,21 +16,21 @@
  *
  */
 
-var PROTO_PATH = __dirname + '/../../protos/rpc.proto';
-
 var grpc = require('grpc');
-var fs = require('fs');
-var lndCert = fs.readFileSync("/home/allan/.lnd/tls.cert");
-var credentials = grpc.credentials.createSsl(lndCert);
-var lnrpcDescriptor = grpc.load(PROTO_PATH);
-var lnrpc = lnrpcDescriptor.lnrpc;
-var lightning = new lnrpc.Lightning('localhost:10009', credentials); 
+var gi_proto = grpc.load(buyGittinsIndex.proto).buygittinsindex;
 
 function main() {
-  lightning.channelBalance({}, function(err, response) {
-    console.log("Channelbalance: ",response.balance);
+  var client = new gi_proto.BuyGittinsIndex('localhost:4203',
+                                       grpc.credentials.createInsecure());
+  var user;
+  if (process.argv.length >= 3) {
+    user = process.argv[2];
+  } else {
+    user = 'world';
+  }
+  client.sayHello({discount: 90; successes: 0; failures: 0}, function(err, response) {
+    console.log('Response:', response.billText);
   });
 }
 
 main();
-
