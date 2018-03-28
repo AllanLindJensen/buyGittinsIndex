@@ -1,0 +1,50 @@
+syntax = "proto3"
+
+option java_multiple_files = true;
+option java_package = "dk.danishlightning.buyGittinsIndex";
+option java_outer_classname = "BuyGittinsIndexProto";
+
+package = buygittinsindex;
+
+// Protocol for service "buy Gittins Index"
+// at DanishLightning.dk
+
+service BuyGittinsIndex {
+
+// When data has been entered and the button
+// "BUY" has been pressed
+
+rpc OrderGittinsIndex(Order) returns (Bill) {}
+
+// When the bill has been received,
+// the javaxcript checks every second
+// whether the bill has been paid
+
+rpc Deliver(R_HASH) return (Result) {}
+
+message Order {
+  int32 Discount = 1;
+  int32 Successes = 2;
+  int32 Failures = 3;
+}
+
+message Bill {
+  string BillText = 1;
+  string R_hash = 2; 
+}
+
+message R_HASH {
+  string R_hash = 1;
+  // The following are for development purposes
+  // The server must have a db with
+  // hashes of the bills and Order.
+  // Running w/o this db, send the data again
+  int32 Discount = 3;
+  int32 Successes = 4;
+  int32 Failures = 5; 
+}
+
+message Result {
+  boolean Paid = 1;
+  int32 GittinsIndex = 2;
+}  
