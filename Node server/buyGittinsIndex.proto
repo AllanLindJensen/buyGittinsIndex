@@ -1,24 +1,27 @@
 syntax = "proto3";
 
-option java_multiple_files = true;
-option java_package = "dk.danishlightning.buygittinsindex";
-option java_outer_classname = "BuyGittinsIndexProto";
-
 package buygittinsindex;
 
 // Protocol for service "buy Gittins Index"
 // at DanishLightning.dk
+// placed on 176.21.113.33:14203
 
 service BuyGittinsIndex {
 
 	// When data has been entered and the button
 	// "BUY" has been pressed
+	// see example: send_order.js
 
 	rpc OrderGittinsIndex(Order) returns (Bill) {}
 
 	// When the bill has been received,
 	// the javaxcript checks every second
 	// whether the bill has been paid
+	// see example: check_order.js
+
+	// first no checking of paid bill is executed
+	// The bill is considered paid, iff number of successes
+	// differs from zero.
 
 	rpc Deliver(R_HASH) returns (Result) {}
 }
@@ -46,6 +49,6 @@ message R_HASH {
 }
 
 message Result {
-  boolean paid = 1;
-  int32 gittinsIndex = 2;
+  bool paid = 1;
+  int32 gittins_index = 2;
 }  
