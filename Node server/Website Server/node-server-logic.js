@@ -1,10 +1,13 @@
  /**
   * Server logic.
+  * 
   */
 var url = require('url'); //Easy cleaning of URL-params etc.
+var path = require('path');
 
-var lndModule = require('./node-server-lightning-module');
+var gittinsServerModule = require('./node-server-gittins-interface');
 var htmlModule = require('./node-server-HTML')
+var fileServer = require('./node-server-fileserver');
 
 module.exports = {
     /**
@@ -17,13 +20,26 @@ module.exports = {
      */
     
     serverMain: function (request, response) {
-        console.log("server main."); //SBN
         //Extract the requested location from the URL params.
         var URLParams = url.parse(request.url, true); //URLParams now contain all params as fields (URLParams.parameterName). Get each one as js-var.
-        
-        //TODO: for now, always send the basic html.
-        var html = htmlModule.getMainPage();
-        sendResponse(html, response, 'text/html');
+  
+        var html;
+        var content;
+        var paths = URLParams.path.split("/");
+
+        //Handle routing based on paths from client. For css/js folder, simply serve the file.
+        if (paths.length > 2) //implies the format /*/filename with possible additional folders.
+        {
+            fileServer.sendFile(URLParams.path, response);
+        }
+        else 
+        {
+            //Handle standard page, and special calls.
+            html = htmlModule.getMainPage();
+            content = 'text/html';
+            //TODO: for now, always send the basic html.
+            sendResponse(html, response, content);
+        }
     }
 };
 

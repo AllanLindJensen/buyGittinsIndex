@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Starter Template - Materialize</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">buy Gittins Index</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#">Lookup invoice</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="sidenav">
+        <li><a href="#">Lookup invoice</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+  <div class="section no-pad-bot" id="index-banner">
+  
+      <!--  <div class="container">
+      <br><br>
+      <h1 class="header center orange-text">Starter Template</h1>
+    </div>--> 
+  </div>
+
+
+  <div class="container">
+    <div class="row">
+      <form class="col s12" onsubmit="generateInvoiceForNumbers()" >
+        <div class="row">
+          <div class="input-field col s12">
+            <input placeholder="5%" id="discount" type="text" class="validate">
+            <label for="discount">Discount factor</label>
+          </div>
+        </div>
+        <div class="row">
+        <div class="input-field col s6">
+            <input id="successes" type="number" min="0" class="validate">
+            <label for="successes">Number of successes</label>
+          </div>
+          <div class="input-field col s6">
+            <input id="failures" type="number" class="validate">
+            <label for="failures">Number of failures</label>
+          </div>
+        </div>
+       
+        <button class="mdc-button">
+            Button
+        </button>
+        <button class="mdc-button mdc-button--stroked">
+            Baseline
+          </button>
+        <div class="input-field col s6" hidden="true">
+            <input disabled id="invoice" type="text" class="validate">
+            <label for="successes">Invoice</label>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">payment</i></h2>
+            <h5 class="center">Pay using bitcoin</h5>
+
+            <p class="light">blah blah info on payment</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">info</i></h2>
+            <h5 class="center">What are you buying</h5>
+
+            <p class="light">
+              You may wonder, what a Gittins Index is. Google or
+              <a href="https://sites.google.com/site/allanlindjensen/home/gittins-index">
+                  look here</a>, but do you really care, as long as you get to spend your tBTCs?
+            </p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
+            <h5 class="center">How does it work</h5>
+            <p class="light">Or something.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <br><br>
+  </div>
+
+  <footer class="page-footer orange">
+    <div class="container">
+      <div class="row">
+        <div class="col l6 s12">
+          <h5 class="white-text">final info on...?</h5>
+          <p class="grey-text text-lighten-4">info info info.</p>
+
+
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="../js/materialize.js"></script>
+  <script src="../js/init.js"></script>
+
+  </body>
+</html>

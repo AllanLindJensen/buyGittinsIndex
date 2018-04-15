@@ -1,5 +1,5 @@
 var grpc = require('grpc');
-var gi_proto = grpc.load('buyGittinsIndex.proto').buygittinsindex;
+var gi_proto = grpc.load('../Proto files/buyGittinsIndex.proto').buygittinsindex;
 
 /**
  * getBill RPC method.
