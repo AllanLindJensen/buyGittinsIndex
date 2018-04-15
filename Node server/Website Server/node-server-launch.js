@@ -11,7 +11,7 @@ var http = require('http'); //HTTP FOR LOCALHOST TESTING (without ssl) - NOT PRO
 //TODO change to https module before public launch.
 //create a server object, and define a basic function for reacting to requests.
 http.createServer(serverLogic.serverMain) //Call with the serverMain function from node-server-logic.js
-.listen(8080); //the server object listens on port 8080. 
+.listen(port); //the server object listens on port 8080. 
 
 //Use port 8081 to verify that the server is running as intented. Only for debugging purposes.
 http.createServer(function (req, res) {

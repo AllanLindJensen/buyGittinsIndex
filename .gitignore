@@ -1,0 +1,5 @@
+#ignored folders:
+
+#dependencies should be kept local.
+node_modules
+

@@ -6,6 +6,7 @@ var fs = require('fs'); //For interacting with the file-system.
 require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
   };
+
 //Import the html file as variable, for easing sending to client. Must be done after the html-extension.
 var HTMLTemplate = require('./HTML/clientside.html');
 
