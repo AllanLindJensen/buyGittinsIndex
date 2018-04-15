@@ -1,7 +1,7 @@
 var grpc = require('grpc');
 var receive_order = grpc.load('buyGittinsIndex.proto').buygittinsindex;
 function main() {
-  var client = new receive_order.BuyGittinsIndex('localhost:14203',
+  var client = new receive_order.BuyGittinsIndex('176.21.113.33:14203',
                                        grpc.credentials.createInsecure());
   client.deliver({
       r_hash: '357uikm5367j56j',
