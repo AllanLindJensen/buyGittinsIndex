@@ -3,14 +3,15 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>Starter Template - Materialize</title>
-
+  <title>get gittins</title>
+  <script src="../js/html-server-clientside.js"></script>
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
+  
   <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">buy Gittins Index</a>
       <ul class="right hide-on-med-and-down">
@@ -31,39 +32,48 @@
     </div>--> 
   </div>
 
-
   <div class="container">
     <div class="row">
       <form class="col s12" onsubmit="generateInvoiceForNumbers()" >
         <div class="row">
-          <div class="input-field col s12">
-            <input placeholder="5%" id="discount" type="text" class="validate">
-            <label for="discount">Discount factor</label>
-          </div>
-        </div>
-        <div class="row">
-        <div class="input-field col s6">
-            <input id="successes" type="number" min="0" class="validate">
-            <label for="successes">Number of successes</label>
+          <div class="input-field col s6">
+              <input id="discount" type="number" min="0" class="validate" oninput="userInputTrigger()" step="0.01"></textarea>
+              <label for="discount">Textarea</label>
           </div>
           <div class="input-field col s6">
-            <input id="failures" type="number" class="validate">
+            <input id="successes" type="number" min="0" class="validate" oninput="userInputTrigger()">
+            <label for="successes">Number of successes</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="failures" type="number" min="0" class="validate" oninput="userInputTrigger()">
             <label for="failures">Number of failures</label>
           </div>
+          <a class="waves-effect waves-light btn disabled" id="orderButton" onclick="buttonPressed()">Order result</a>
         </div>
-       
-        <button class="mdc-button">
-            Button
-        </button>
-        <button class="mdc-button mdc-button--stroked">
-            Baseline
-          </button>
-        <div class="input-field col s6" hidden="true">
-            <input disabled id="invoice" type="text" class="validate">
-            <label for="successes">Invoice</label>
-          </div>
-        </div>
+
       </form>
+    </div>
+  </div>
+  
+  <div class="card blue-grey darken-1" id="payment card">
+    <div class="card-content white-text">
+      <span class="card-title" id="payment card title">Invoice</span>
+      <p id="paymentText">Enter your query above, to recieve an invoice.</p>
+    </div>
+  </div>
+</div>
+
+<div class="card blue-grey lighten-1" id="result card" hidden="true">
+    <div class="card-content white-text">
+      <span class="card-title">Result</span>
+      <p>Enter your query above, to recieve an invoice.</p>
+    </div>
+    <div class="card-action">
+      <a href="#">This is a link</a>
+      <a href="#">This is a link</a>
     </div>
   </div>
 
@@ -113,14 +123,10 @@
         <div class="col l6 s12">
           <h5 class="white-text">final info on...?</h5>
           <p class="grey-text text-lighten-4">info info info.</p>
-
-
         </div>
       </div>
     </div>
   </footer>
-
-
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="../js/materialize.js"></script>

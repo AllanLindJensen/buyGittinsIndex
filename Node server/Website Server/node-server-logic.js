@@ -26,7 +26,7 @@ module.exports = {
         var html;
         var content;
         var paths = URLParams.path.split("/");
-
+        var paramsMap = url.parse(URLParams.path, true);
         //Handle routing based on paths from client. For css/js folder, simply serve the file.
         if (paths.length > 2) //implies the format /*/filename with possible additional folders.
         {
@@ -34,17 +34,30 @@ module.exports = {
         }
         else 
         {
-            //Handle standard page, and special calls.
-            html = htmlModule.getMainPage();
-            content = 'text/html';
-            //TODO: for now, always send the basic html.
-            sendResponse(html, response, content);
+            console.log("parameters: " + paramsMap.query.discount);
+            //Check/handle params.
+            if (paramsMap.query.discount != undefined)
+            {
+                gittinsServerModule.setClient('0.0.0.0:14203');
+                var bill = gittinsServerModule.getNewBill(1,2,3, sendJSONResponse, response);
+            }
+            else
+            {
+                //Handle standard page, and special calls.
+                html = htmlModule.getMainPage();
+                content = 'text/html';
+                //TODO: for now, always send the basic html.
+                sendResponse(html, response, content);
+            }
         }
     }
 };
 
 //Implement functions called from the main server logic here.
+var routingLogic = function()
+{
 
+}
 
 /**
  * Function for sending a response.
@@ -54,8 +67,14 @@ module.exports = {
  */
 var sendResponse = function(content, response, contentType)
 {
-    console.log("sending response."); //SBN
     response.writeHead(200, {'Content-Type': contentType});
     response.write(content); //write a response to the client
+    response.end(); //end the response..
+}
+
+var sendJSONResponse = function(JSONObject, response)
+{
+    response.writeHead(200, {'Content-Type': 'application/json'});
+    response.write(JSON.stringify(JSONObject)); //write a response to the client
     response.end(); //end the response..
 }
