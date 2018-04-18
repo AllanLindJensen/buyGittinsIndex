@@ -21,7 +21,6 @@ module.exports = {
     },
     //Get the main html.
     getMainPage: function() {
-        console.log("getMainPage."); //SBN
         return HTMLTemplate;
     }
 };

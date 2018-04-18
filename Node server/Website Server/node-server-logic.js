@@ -9,6 +9,9 @@ var gittinsServerModule = require('./node-server-gittins-interface');
 var htmlModule = require('./node-server-HTML')
 var fileServer = require('./node-server-fileserver');
 
+var gittinsHost = '0.0.0.0';
+var gittinsPort = "14203";
+
 module.exports = {
     /**
      *  Main server logic.
@@ -18,11 +21,9 @@ module.exports = {
      * 
      * 
      */
-    
     serverMain: function (request, response) {
         //Extract the requested location from the URL params.
         var URLParams = url.parse(request.url, true); //URLParams now contain all params as fields (URLParams.parameterName). Get each one as js-var.
-  
         var html;
         var content;
         var paths = URLParams.path.split("/");
@@ -34,12 +35,11 @@ module.exports = {
         }
         else 
         {
-            console.log("parameters: " + paramsMap.query.discount);
             //Check/handle params.
-            if (paramsMap.query.discount != undefined)
+            if (paramsMap.query.discount)
             {
-                gittinsServerModule.setClient('0.0.0.0:14203');
-                var bill = gittinsServerModule.getNewBill(1,2,3, sendJSONResponse, response);
+                gittinsServerModule.setClient(gittinsHost + ":" + gittinsPort);
+                var bill = gittinsServerModule.getNewBill(parseInt(paramsMap.query.discount), parseInt(paramsMap.query.successes), parseInt(paramsMap.query.failures), sendJSONResponse, response);
             }
             else
             {
@@ -50,6 +50,14 @@ module.exports = {
                 sendResponse(html, response, content);
             }
         }
+    },
+    setHost: function(newHost)
+    {
+        gittinsHost = newHost;
+    },
+    setPort: function(newPort)
+    {
+        gittinsPort = newPort;
     }
 };
 
