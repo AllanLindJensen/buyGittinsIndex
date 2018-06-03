@@ -87,11 +87,28 @@ var getBillFromGittins = function(URLParams, response)
     var bill = gittinsServerModule.getNewBill(parseInt(paramsMap.query.discount), parseInt(paramsMap.query.successes), parseInt(paramsMap.query.failures), sendJSONResponse, response);
 }
 
-var getResultIfReady = function(URLParams, reponse)
+var getResultIfReady = function(URLParams, response)
 {
-    
+    var paramsMap = url.parse(URLParams.path, true);
+    var r_hashInput = paramsMap.query.r_hash.toString();
+    var discountInput = parseInt(paramsMap.query.discount);
+    var successesInput = parseInt(paramsMap.query.successes);
+    var failuresInput = parseInt(paramsMap.query.failures);
+    //If the hashinput is ok, but the numbers are missing, input 0 0 0.
+    if (!r_hashInput == "" || (discountInput == "NaN" || successesInput == "NaN" || failuresInput == "NaN"))
+    {
+        discountInput = 0;
+        successesInput = 0;
+        failuresInput = 0;
+        gittinsServerModule.setClient(gittinsHost + ":" + gittinsPort);
+        gittinsServerModule.CheckBillAndGetResult(r_hashInput, discountInput, successesInput, failuresInput, sendJSONResponse, response);
+    }
+    else 
+    {
+        gittinsServerModule.setClient(gittinsHost + ":" + gittinsPort);
+        gittinsServerModule.CheckBillAndGetResult(r_hashInput, discountInput, successesInput, failuresInput, sendJSONResponse, response);
+    }
 }
-
 /**
  * Function for sending a response.
  * @param {string} content The content to send to client.
