@@ -2,7 +2,7 @@
  * Main script, which launches the server.
  * All essential logic should be kept in the various modules, to keep launch logic separate.
  */
-var port;
+var port = "8080";
  //required node modules.
 var serverLogic = require('./node-server-logic');
 var https = require('https'); //Make sure to only use the https module (not http).
