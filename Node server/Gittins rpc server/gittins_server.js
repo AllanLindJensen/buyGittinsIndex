@@ -17,10 +17,17 @@ function deliver(call, callback) {
   gamma = call.request.discount * 0.01;
   ones = call.request.successes;
   zeros = call.request.failures; 
-  var b = (call.request.successes !=0); var gi;
-  if (b) {gi = Math.round(gittinsBinary()*10000);} else {gi = 0;}
-  console.log("check payment of " + call.request.r_hash);
-  callback(null, {paid: b, gittins_index: gi});
+  var b = (ones !=0); var gi;
+console.log(JSON.stringify(ones));
+  if (b) {
+    gi = Math.round(gittinsBinary()*10000);
+    console.log("" + call.request.r_hash);
+    console.log("paid, GI = " + gi);
+  } else {
+    gi = 0;
+    console.log("unpaid: " + call.request.r_hash);
+  }
+    callback(null, {paid: b, gittins_index: gi});
 }
 
 /*

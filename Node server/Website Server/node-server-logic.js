@@ -95,7 +95,7 @@ var getResultIfReady = function(URLParams, response)
     var successesInput = parseInt(paramsMap.query.successes);
     var failuresInput = parseInt(paramsMap.query.failures);
     //If the hashinput is ok, but the numbers are missing, input 0 0 0.
-    if (!r_hashInput == "" || (discountInput == "NaN" || successesInput == "NaN" || failuresInput == "NaN"))
+    if (!(r_hashInput == "") && (discountInput == "NaN" || successesInput == "NaN" || failuresInput == "NaN"))
     {
         discountInput = 0;
         successesInput = 0;
