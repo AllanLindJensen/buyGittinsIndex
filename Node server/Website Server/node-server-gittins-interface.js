@@ -43,5 +43,10 @@ var getNewBill = function(discountInput, failuresInput, successesInput, JSONcall
       });
 }
 
+var CheckBillAndGetResult = function(r_hash, httpResponse)
+{
+    
+}
+
 exports.getNewBill = getNewBill;
 exports.setClient = setClient;
