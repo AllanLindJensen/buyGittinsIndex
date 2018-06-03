@@ -9,7 +9,7 @@ var gittinsServerModule = require('./node-server-gittins-interface');
 var htmlModule = require('./node-server-HTML')
 var fileServer = require('./node-server-fileserver');
 
-var gittinsHost = '0.0.0.0';
+var gittinsHost = '0.0.0.0:14203'; //'176.21.113.33';
 var gittinsPort = "14203";
 
 module.exports = {
@@ -32,6 +32,7 @@ module.exports = {
         if (paths.length > 2) //implies the format /*/filename with possible additional folders.
         {
             fileServer.sendFile(URLParams.path, response);
+console.log("ServerMain sending "+ URLParams.path);
         }
         else 
         {
