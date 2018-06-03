@@ -127,6 +127,7 @@ message InitWalletRequest {
     to encrypt the generated aezeed cipher seed.
     */
     bytes aezeed_passphrase = 3;
+<<<<<<< HEAD
 
     /**
     recovery_window is an optional argument specifying the address lookahead
@@ -136,6 +137,8 @@ message InitWalletRequest {
     the first initialization of the wallet.
     */
     int32 recovery_window = 4;
+=======
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 }
 message InitWalletResponse {
 }
@@ -147,6 +150,7 @@ message UnlockWalletRequest {
     function properly.
     */
     bytes wallet_password = 1;
+<<<<<<< HEAD
 
     /**
     recovery_window is an optional argument specifying the address lookahead
@@ -156,6 +160,8 @@ message UnlockWalletRequest {
     the first initialization of the wallet.
     */
     int32 recovery_window = 2;
+=======
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 }
 message UnlockWalletResponse {}
 
@@ -926,10 +932,13 @@ message GetInfoResponse {
 
     /// Timestamp of the block best known to the wallet
     int64 best_header_timestamp = 13 [ json_name = "best_header_timestamp" ];
+<<<<<<< HEAD
 
     /// The version of the LND software that the node is running.
     string version = 14 [ json_name = "version" ];
 
+=======
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 }
 
 message ConfirmationUpdate {
@@ -1081,6 +1090,7 @@ message PendingChannelsResponse {
         int64 fee_per_kw = 6 [ json_name = "fee_per_kw" ];
     }
 
+<<<<<<< HEAD
     message WaitingCloseChannel {
         /// The pending channel waiting for closing tx to confirm
         PendingChannel channel = 1;
@@ -1089,6 +1099,8 @@ message PendingChannelsResponse {
         int64 limbo_balance = 2 [ json_name = "limbo_balance" ];
     }
 
+=======
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
     message ClosedChannel {
         /// The pending channel to be closed
         PendingChannel channel = 1;
@@ -1134,9 +1146,12 @@ message PendingChannelsResponse {
 
     /// Channels pending force closing
     repeated ForceClosedChannel pending_force_closing_channels =  4 [ json_name = "pending_force_closing_channels" ];
+<<<<<<< HEAD
 
     /// Channels waiting for closing tx to confirm
     repeated WaitingCloseChannel waiting_close_channels = 5 [ json_name = "waiting_close_channels" ];
+=======
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 }
 
 message WalletBalanceRequest {
@@ -1184,11 +1199,17 @@ message Hop {
     */
     uint64 chan_id = 1 [json_name = "chan_id"];
     int64 chan_capacity = 2 [json_name = "chan_capacity"];
+<<<<<<< HEAD
     int64 amt_to_forward = 3 [json_name = "amt_to_forward", deprecated = true];
     int64 fee = 4 [json_name = "fee", deprecated = true];
     uint32 expiry = 5 [json_name = "expiry"];
     int64 amt_to_forward_msat = 6 [json_name = "amt_to_forward_msat"];
     int64 fee_msat = 7 [json_name = "fee_msat"];
+=======
+    int64 amt_to_forward = 3 [json_name = "amt_to_forward"];
+    int64 fee = 4 [json_name = "fee"];
+    uint32 expiry = 5 [json_name = "expiry"];
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 }
 
 /**
@@ -1213,7 +1234,11 @@ message Route {
     of a one-hop payment, this value will be zero as we don't need to pay a fee
     it ourself.
     */
+<<<<<<< HEAD
     int64 total_fees = 2 [json_name = "total_fees", deprecated = true];
+=======
+    int64 total_fees = 2 [json_name = "total_fees"];
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 
     /**
     The total amount of funds required to complete a payment over this route.
@@ -1222,12 +1247,17 @@ message Route {
     satoshis, otherwise the route will fail at an intermediate node due to an
     insufficient amount of fees.
     */
+<<<<<<< HEAD
     int64 total_amt = 3 [json_name = "total_amt", deprecated = true];
+=======
+    int64 total_amt = 3 [json_name = "total_amt"];
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 
     /**
     Contains details concerning the specific forwarding details at each hop.
     */
     repeated Hop hops = 4 [json_name = "hops"];
+<<<<<<< HEAD
     
     /**
     The total fees in millisatoshis.
@@ -1238,6 +1268,8 @@ message Route {
     The total amount in millisatoshis.
     */
     int64 total_amt_msat = 6 [json_name = "total_amt_msat"];
+=======
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 }
 
 message NodeInfoRequest {
@@ -1288,7 +1320,11 @@ message RoutingPolicy {
 /**
 A fully authenticated channel along with all its unique attributes.
 Once an authenticated channel announcement has been processed on the network,
+<<<<<<< HEAD
 then an instance of ChannelEdgeInfo encapsulating the channels attributes is
+=======
+then a instance of ChannelEdgeInfo encapsulating the channels attributes is
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 stored. The other portions relevant to routing policy of a channel are stored
 within a ChannelEdgePolicy for each direction of the channel.
 */
@@ -1398,6 +1434,7 @@ message ClosedChannelUpdate {
     ChannelPoint chan_point = 4;
 }
 
+<<<<<<< HEAD
 message HopHint {
     /// The public key of the node at the start of the channel.
     string node_id = 1 [json_name = "node_id"];
@@ -1426,6 +1463,8 @@ message RouteHint {
     repeated HopHint hop_hints = 1 [json_name = "hop_hints"];
 }
 
+=======
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 message Invoice {
     /**
     An optional memo to attach along with the invoice. Used for record keeping
@@ -1481,6 +1520,7 @@ message Invoice {
 
     /// Delta to use for the time-lock of the CLTV extended to the final hop.
     uint64 cltv_expiry = 13 [json_name = "cltv_expiry"];
+<<<<<<< HEAD
 
     /**
     Route hints that can each be individually used to assist in reaching the
@@ -1490,6 +1530,8 @@ message Invoice {
 
     /// Whether this invoice should include routing hints for private channels.
     bool private = 15 [json_name = "private"];
+=======
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 }
 message AddInvoiceResponse {
     bytes r_hash = 1 [json_name = "r_hash"];
@@ -1579,7 +1621,10 @@ message PayReq {
     string description_hash = 7 [json_name = "description_hash"];
     string fallback_addr = 8 [json_name = "fallback_addr"];
     int64 cltv_expiry = 9 [json_name = "cltv_expiry"];
+<<<<<<< HEAD
     repeated RouteHint route_hints = 10 [json_name = "route_hints"];
+=======
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 }
 
 message FeeReportRequest {}

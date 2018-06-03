@@ -28,9 +28,12 @@ var lnrpcDescriptor = grpc.load('../Proto files/lnd_rpc.proto');
 var lnrpc = lnrpcDescriptor.lnrpc;
 var client = new lnrpc.Lightning('localhost:10009', credentials);
 
+<<<<<<< HEAD
 //Gittins rpc server
 var gi_proto = grpc.load('../Proto files/buyGittinsIndex.proto').buygittinsindex;
 
+=======
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 // functions converting the byte[] r_hash to HEX string and back
 
 function toHexString(byteArray) {
@@ -60,9 +63,15 @@ function orderGittinsIndex(call, callback) {
 
   {
     var memo = "GI("+gamma+","+ones+","+zeros+")";
+<<<<<<< HEAD
     client.addInvoice({
         "memo": memo,
         "value": 150
+=======
+    client.addinvoice({
+        "memo": memo,
+        "amt": 150
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
       }, function(err, response) {
         if (err != null) {
           callback(err,null)
@@ -75,7 +84,11 @@ function orderGittinsIndex(call, callback) {
 	  });
           console.log(memo + " " + rHash);
         }
+<<<<<<< HEAD
       });
+=======
+      }
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
   }
 }
 
@@ -106,12 +119,21 @@ function deliver(call, callback) {
             console.log("GI = "+gi);
           } else {
             callback(null, {
+<<<<<<< HEAD
                 paid:false, gittins_index:0
+=======
+                paid:false, gittins_index:null
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
             });
             console.log("unpaid");
 	  }
         }
+<<<<<<< HEAD
       });
+=======
+      }
+    }
+>>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
   }
 }
 

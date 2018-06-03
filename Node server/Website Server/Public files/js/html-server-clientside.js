@@ -47,6 +47,11 @@ var checkAllInputFields = function()
     }
 }
 
+var onInvoiceChange = function()
+{
+    checkHashAndGetResult();
+}
+
 var disableAllInputs = function()
 {
     //TODO disable when asked for invoice.
@@ -58,20 +63,38 @@ var getNewInvoiceNumber = function()
     var discountContent = document.getElementById("discount").value;
     var successContent = document.getElementById("successes").value;
     var failureContent = document.getElementById("failures").value;
-    httpGetAsync("./?discount=" + discountContent + "&successes=" + successContent + "&failures=" + failureContent, insertInvoice);
+    httpGetAsyncFunction(URLTargets.getBill, "?discount=" + discountContent + "&successes=" + successContent + "&failures=" + failureContent, insertInvoice);
 }
 
 var insertInvoice = function(JSONResponse)
 {
     var responseObject = JSON.parse(JSONResponse);
-    var cardText = document.getElementById("paymentText").innerHTML;
-    document.getElementById("paymentText").innerHTML = responseObject.billText;
+    var cardText = document.getElementById("paymentText").value;
+    document.getElementById("paymentText").value = responseObject.billText;
+    checkHashAndGetResult();
+}
+
+var checkHashAndGetResult = function()
+{
+    var discountContent = document.getElementById("discount").value;
+    var successContent = document.getElementById("successes").value;
+    var failureContent = document.getElementById("failures").value;
+    var r_hash = document.getElementById("paymentText").value;
+    var paramsString = "?discount=" + discountContent + "&successes=" + successContent + "&failures=" + failureContent + "&r_hash=" + r_hash;
+    httpGetAsyncFunction(URLTargets.checkBill, paramsString, parseResult);
+}
+
+var parseResult = function(JSONResponse)
+{
+    var responseObject = JSON.parse(JSONResponse);
+    document.getElementById("result").innerHTML = "paid: " + responseObject.paid + ", index:" + responseObject.gittins_index;
 }
 
 //********  async http functions
 //TODO Change to https.
-function httpGetAsync(URL, callbackFunction)
+function httpGetAsyncFunction(URLTarget, parameters, callbackFunction)
 {
+    var URL = URLTarget + parameters;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
@@ -81,11 +104,15 @@ function httpGetAsync(URL, callbackFunction)
     xmlHttp.send(null);
 }
 
+
+//*******global variables
+var URLTargets = {getBill: "./getbill/", checkBill: "./checkbill/"};
+
 /*
 * Generation of QR code
 */
 // from clientside.html: var scr = "../js/qrcode.js"
-  var qrcode = new QRCode(document.getElementById("qrcode"), {
+var qrcode = new QRCode(document.getElementById("qrcode"), {
 	width : 400,
 	height : 400
     });
@@ -99,7 +126,7 @@ function displayQRCode() {
 	    width : 400, height : 400
         });
     }
-    qrcode.makeCode(document.getElementById("paymentText").innerHTML);
+    qrcode.makeCode(document.getElementById("paymentText").value);
 }
 
 /*
@@ -110,6 +137,7 @@ function cpClipBoard() {
   var field = document.getElementById("paymentText");
   field.select();
   var ok = document.execCommand('copy');
-  if (ok) {alert("bill copied.");} else {alert("Sorry, unable to copy.");}
+  if (ok) M.toast({html: 'Copied: ' + document.getElementById("paymentText").value, displayLength: 1000})
+  else M.toast({html: 'Sorry, unable to copy!', displayLength: 2000});
   field.blur();
-}  
+}

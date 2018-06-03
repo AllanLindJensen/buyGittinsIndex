@@ -39,10 +39,8 @@ message Bill {
 
 message R_HASH {
   string r_hash = 1;
-  // The following are for development purposes
-  // The server must have a db with
-  // hashes of the bills and Order.
-  // Running w/o this db, send the data again
+  // When looking up the bill, the gittins_server can find the data.
+  // But it is much easier just to send it again.
   int32 discount = 3;
   int32 successes = 4;
   int32 failures = 5; 

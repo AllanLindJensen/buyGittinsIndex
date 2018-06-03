@@ -4,12 +4,17 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
   <title>get gittins</title>
-  <script src="../js/qrcode.js"></script>
-  <script src="../js/html-server-clientside.js"></script>
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="../js/jquery.min.js"></script>
+  <script type="text/javascript" src="../js/materialize.js"></script>
+  <script type="text/javascript" src="../js/qrcode.js"></script>
+  <script type="text/javascript" src="../js/qrcode.min.js"></script>
+  <script type="text/javascript" src="../js/html-server-clientside.js"></script>
+  <script type="text/javascript" src="../js/init.js"></script>
 </head>
 <body>
   
@@ -39,7 +44,7 @@
         <div class="row">
           <div class="input-field col s6">
               <input id="discount" type="number" min="0" class="validate" oninput="userInputTrigger()"></textarea>
-              <label for="discount">Discount factor, interger in percent, e.g. 95</label>
+              <label for="discount">Discount factor, e.g. 95</label>
           </div>
           <div class="input-field col s6">
             <input id="successes" type="number" min="0" class="validate" oninput="userInputTrigger()">
@@ -61,12 +66,11 @@
   
   <div class="card blue-grey darken-1" id="payment card">
     <div class="card-content white-text">
-      <span class="card-title" id="payment card title">Invoice</span>
-      <textarea id="paymentText"> 
-         Enter your query above, to recieve an invoice.
-      </textarea>
-<!--      Esbens kode
-<p id="paymentText">Enter your query above, to recieve an invoice.</p> -->
+      <div class=".input-field">
+        <span class="card-title" id="payment card title">Invoice</span>
+        <input placeholder="Enter your query above, to generate an invoice, or insert you existing invoice here." id="paymentText" type="text" onkeyup="onInvoiceChange()" onpaste="onInvoiceChange()" onchange="onInvoiceChange()">
+        <label for="paymentText">Your invoice</label>
+      </div>
     </div>
   </div>
 </div>
@@ -76,14 +80,10 @@
   <button class="waves-effect waves-light btn enabled" onclick="cpClipBoard();">Copy to clipboard</button>
 </div>
 
-<div class="card blue-grey lighten-1" id="result card" hidden="true">
+<div class="card blue-grey lighten-1" id="result card">
     <div class="card-content white-text">
       <span class="card-title">Result</span>
-      <p>Enter your query above, to recieve an invoice.</p>
-    </div>
-    <div class="card-action">
-      <a href="#">This is a link</a>
-      <a href="#">This is a link</a>
+      <p class="flow-text" id="result">Enter your query above, to recieve an invoice.</p>
     </div>
   </div>
 
@@ -143,11 +143,6 @@
 
 <!--  Scripts-->
 <!--TODO put in ../js/html-server-clientside.js-->
-
-<!--  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>-->  
-  <script src="../js/materialize.js"></script>
-  <script src="../js/init.js"></script>
-<!--  <script type="text/javascript" src="../js/jquery.min.js"></script> -->
 
 </body>
 </html>

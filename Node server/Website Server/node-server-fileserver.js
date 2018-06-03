@@ -8,7 +8,6 @@ module.exports = {
      */
     sendFile: function(pathName, response)
     {
-        //console.log("fetching " + pathName);
         var filePath = './Public\ files/' + pathName;
         var extname = path.extname(filePath);
         var contentType = 'text/html';

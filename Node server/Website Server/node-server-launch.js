@@ -2,7 +2,7 @@
  * Main script, which launches the server.
  * All essential logic should be kept in the various modules, to keep launch logic separate.
  */
-var port;
+var port = "8080";
  //required node modules.
 var serverLogic = require('./node-server-logic');
 var https = require('https'); //Make sure to only use the https module (not http).
@@ -10,9 +10,9 @@ var http = require('http'); //HTTP FOR LOCALHOST TESTING (without ssl) - NOT PRO
 
 
 //Launch arguments:
-if (process.argv.length > 1) 
+if (process.argv.length > 2) 
 {
-  if (process.argv[2].indexOf("help") != -1)
+  if (process.argv[2] .indexOf("help") != -1)
   {
     console.log("Server launch: (node node-server-launch.js) [host] [port]");
     return;
