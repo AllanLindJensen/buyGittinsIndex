@@ -5,8 +5,8 @@ var gi_proto = grpc.load('../Proto files/buyGittinsIndex.proto').buygittinsindex
  * getBill RPC method.
  */
 function orderGittinsIndex(call, callback) {
-  callback(null, {billText: 'lnt876htr3iuytjuy654nhgtr7ytrdjhy5jhgr87ytfjuyjhgfjuy65jhtri876587trd',
-    r_hash: '9876kjhyt54kjhytr7y6trhtr4'});
+  callback(null, {billText: 'lnt876htr3iuytjuy654nhgtr7ytrdjhy5jhgr8766jtyjetyjgraetyidrtfhserthdgukfyyukarthgukfhjkassfgfujhklyilbg5t7ukyiTHDTUKAEDTHSDFFYJSTTYJAEATHRTHlerryuityknytteetyiyuiytfjuyjhgfjuy65jhtri876587trd',
+    r_hash: 'b58f10ade7383f95b5b9e07c54e67b24060708090a7d7e7f80fcfdfeff000102'});
 }
 
 /**
