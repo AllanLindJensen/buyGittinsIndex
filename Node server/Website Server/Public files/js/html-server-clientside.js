@@ -83,7 +83,7 @@ function httpGetAsyncFunction(URLTarget, parameters, callbackFunction)
 }
 
 //*******global variables
-var URLTargets = {getBill: "./getbill/", checkBill: "./checkresult/"};
+var URLTargets = {getBill: "./getbill/", checkBill: "./checkbill/"};
 
 
 console.log("SBN client side js last line read.");

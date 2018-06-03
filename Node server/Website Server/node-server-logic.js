@@ -12,6 +12,8 @@ var fileServer = require('./node-server-fileserver');
 var gittinsHost = '0.0.0.0';
 var gittinsPort = "14203";
 
+var URLTargets = {getBill: "getbill", checkBill: "checkbill"};
+
 module.exports = {
     /**
      *  Main server logic.
@@ -28,28 +30,8 @@ module.exports = {
         var content;
         var paths = URLParams.path.split("/");
         var paramsMap = url.parse(URLParams.path, true);
-        //Handle routing based on paths from client. For css/js folder, simply serve the file.
-        if (paths.length > 2) //implies the format /*/filename with possible additional folders.
-        {
-            fileServer.sendFile(URLParams.path, response);
-        }
-        else 
-        {
-            //Check/handle params.
-            if (paramsMap.query.discount)
-            {
-                gittinsServerModule.setClient(gittinsHost + ":" + gittinsPort);
-                var bill = gittinsServerModule.getNewBill(parseInt(paramsMap.query.discount), parseInt(paramsMap.query.successes), parseInt(paramsMap.query.failures), sendJSONResponse, response);
-            }
-            else
-            {
-                //Handle standard page, and special calls.
-                html = htmlModule.getMainPage();
-                content = 'text/html';
-                //TODO: for now, always send the basic html.
-                sendResponse(html, response, content);
-            }
-        }
+        var functionToRun = routingLogic(paths);
+        functionToRun(URLParams, response);
     },
     setHost: function(newHost)
     {
@@ -62,7 +44,52 @@ module.exports = {
 };
 
 //Implement functions called from the main server logic here.
-var routingLogic = function()
+var routingLogic = function(pathNames)
+{
+    console.log("SBN path: " + pathNames[1]);
+    //Check for any resource names in the path:
+    if (pathNames.length > 2) //More than the domain and a file
+    {
+        console.log("SBN path: " + pathNames[1]);
+        //There are paths. Check the names.
+        switch (pathNames[1]){
+            case URLTargets.getBill:
+                return getBillFromGittins;
+                break;
+            case URLTargets.checkBill:
+                return getResultIfReady;
+                break;
+            default:
+                return sendPublicFiles;
+                break;
+        }
+    }
+    //No resources requested. Return main page.
+    else return sendMainPage;
+}
+
+var sendPublicFiles = function(URLParams, response)
+{
+    fileServer.sendFile(URLParams.path, response);
+}
+
+var sendMainPage = function(URLParams, response)
+{
+    //Handle standard page, and special calls.
+    html = htmlModule.getMainPage();
+    content = 'text/html';
+    //TODO: for now, always send the basic html.
+    sendResponse(html, response, content);
+}
+
+var getBillFromGittins = function(URLParams, response)
+{
+    var paramsMap = url.parse(URLParams.path, true);
+    gittinsServerModule.setClient(gittinsHost + ":" + gittinsPort);
+    var bill = gittinsServerModule.getNewBill(parseInt(paramsMap.query.discount), parseInt(paramsMap.query.successes), parseInt(paramsMap.query.failures), sendJSONResponse, response);
+}
+
+var getResultIfReady = function(URLParams, reponse)
 {
     
 }

@@ -20,7 +20,7 @@ module.exports = {
       
     },
     //Get the main html.
-    getMainPage: function() {
+    getMainPage: function(URLTargets) {
         return HTMLTemplate;
     }
 };
