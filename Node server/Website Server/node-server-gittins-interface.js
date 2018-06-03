@@ -27,17 +27,16 @@ var setClient = function()
 var getNewBill = function(discountInput, successesInput, failuresInput, JSONcallback, httpResponse)
 {
     var order = {discount: discountInput, successes: successesInput, failures: failuresInput};
-console.log("getNewBill successes" + successesInput + ', failures ' + failuresInput);
+    console.log("getNewBill successes" + successesInput + ', failures ' + failuresInput);
     var bill = client.OrderGittinsIndex(order, function(err, response) {
         if (err) 
         {
-            
-console.log("getNewBill err: " + err);
+            console.log("getNewBill err: " + err);
         } 
         else
         {
             var JSONobject = { "billText": response.billText, "r_hash": response.r_hash };
-console.log("getNewBill " + response.billText);
+            console.log("getNewBill " + response.billText);
             JSONcallback(JSONobject, httpResponse);            
         }
       });
