@@ -58,7 +58,7 @@ var getNewInvoiceNumber = function()
     var discountContent = document.getElementById("discount").value;
     var successContent = document.getElementById("successes").value;
     var failureContent = document.getElementById("failures").value;
-    httpGetAsync("./?discount=" + discountContent + "&successes=" + successContent + "&failures=" + failureContent, insertInvoice);
+    httpGetAsyncFunction(URLTargets.getBill, "?discount=" + discountContent + "&successes=" + successContent + "&failures=" + failureContent, insertInvoice);
 }
 
 var insertInvoice = function(JSONResponse)
@@ -70,8 +70,9 @@ var insertInvoice = function(JSONResponse)
 
 //********  async http functions
 //TODO Change to https.
-function httpGetAsync(URL, callbackFunction)
+function httpGetAsyncFunction(URLTarget, parameters, callbackFunction)
 {
+    var URL = URLTarget + parameters;
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
@@ -80,6 +81,9 @@ function httpGetAsync(URL, callbackFunction)
     xmlHttp.open("GET", URL, true);
     xmlHttp.send(null);
 }
+
+//*******global variables
+var URLTargets = {getBill: "./getbill/", checkBill: "./checkresult/"};
 
 
 console.log("SBN client side js last line read.");
