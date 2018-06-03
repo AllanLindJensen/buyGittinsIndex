@@ -5,8 +5,9 @@ var gi_proto = grpc.load('../Proto files/buyGittinsIndex.proto').buygittinsindex
  * getBill RPC method.
  */
 function orderGittinsIndex(call, callback) {
-  callback(null, {billText: 'lnt876htr3iuytjuy654nhgtr7ytrdjhy5jhgr87ytfjuyjhgfjuy65jhtri876587trd',
-    r_hash: '9876kjhyt54kjhytr7y6trhtr4'});
+  console.log('order GI('+call.request.discount+','+call.request.successes+','+call.request.failures+')');
+  callback(null, {billText: 'lntb17u1pds5mrnpp5futgff358jg89s2890jh2ajcapsavkg9undxd95rz60dc6m2dk3qdpzxysy2umswfjhxum0yppk76twypgxzmnwvycqp2l6pl66cas74jjfkmzn68y9s84vfz3xsem3sdfrle4m8r0wqjgwmj87he3va8xc88atd8zvex66vlrjr6a282xm8k04hv2l7kr8yqt2cqzmrhl2',
+    r_hash: 'f20918876cd11317246e3dd2700bd41a2c25b3b37401412ea28d3dc3d433ecc4'});
 }
 
 /**
@@ -18,6 +19,7 @@ function deliver(call, callback) {
   zeros = call.request.failures; 
   var b = (call.request.successes !=0); var gi;
   if (b) {gi = Math.round(gittinsBinary()*10000);} else {gi = 0;}
+  console.log("check payment of " + call.request.r_hash);
   callback(null, {paid: b, gittins_index: gi});
 }
 
