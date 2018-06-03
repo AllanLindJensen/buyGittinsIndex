@@ -47,7 +47,6 @@ message R_HASH {
 }
 
 message Result {
-  bool some_error = 1
-  bool paid = 2;
-  int32 gittins_index = 3;
+  bool paid = 1;
+  int32 gittins_index = 2;
 }  

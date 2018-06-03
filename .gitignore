@@ -3,3 +3,5 @@
 #dependencies should be kept local.
 node_modules
 
+#working file for communication with lnd
+'Node server/Gittins rpc server/get_bill.js'
