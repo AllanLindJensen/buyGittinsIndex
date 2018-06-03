@@ -10,9 +10,9 @@ var http = require('http'); //HTTP FOR LOCALHOST TESTING (without ssl) - NOT PRO
 
 
 //Launch arguments:
-if (process.argv.length > 1) 
+if (process.argv.length > 2) 
 {
-  if (process.argv[2].indexOf("help") != -1)
+  if (process.argv[2] .indexOf("help") != -1)
   {
     console.log("Server launch: (node node-server-launch.js) [host] [port]");
     return;
