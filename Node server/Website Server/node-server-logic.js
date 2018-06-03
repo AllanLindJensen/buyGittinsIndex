@@ -9,7 +9,7 @@ var gittinsServerModule = require('./node-server-gittins-interface');
 var htmlModule = require('./node-server-HTML')
 var fileServer = require('./node-server-fileserver');
 
-var gittinsHost = '0.0.0.0';
+var gittinsHost = '0.0.0.0:14203'; //'176.21.113.33';
 var gittinsPort = "14203";
 
 var URLTargets = {getBill: "getbill", checkBill: "checkbill"};
@@ -46,11 +46,9 @@ module.exports = {
 //Implement functions called from the main server logic here.
 var routingLogic = function(pathNames)
 {
-    console.log("SBN path: " + pathNames[1]);
     //Check for any resource names in the path:
     if (pathNames.length > 2) //More than the domain and a file
     {
-        console.log("SBN path: " + pathNames[1]);
         //There are paths. Check the names.
         switch (pathNames[1]){
             case URLTargets.getBill:
