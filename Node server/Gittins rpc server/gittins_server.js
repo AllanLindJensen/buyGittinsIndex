@@ -18,16 +18,15 @@ function deliver(call, callback) {
   ones = call.request.successes;
   zeros = call.request.failures; 
   var b = (ones !=0); var gi;
-console.log(JSON.stringify(ones));
+  console.log("? " + call.request.r_hash);
   if (b) {
     gi = Math.round(gittinsBinary()*10000);
-    console.log("" + call.request.r_hash);
     console.log("paid, GI = " + gi);
   } else {
     gi = 0;
-    console.log("unpaid: " + call.request.r_hash);
+    console.log("unpaid");
   }
-    callback(null, {paid: b, gittins_index: gi});
+  callback(null, {paid: b, gittins_index: gi});
 }
 
 /*

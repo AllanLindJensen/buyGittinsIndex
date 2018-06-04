@@ -28,12 +28,9 @@ var lnrpcDescriptor = grpc.load('../Proto files/lnd_rpc.proto');
 var lnrpc = lnrpcDescriptor.lnrpc;
 var client = new lnrpc.Lightning('localhost:10009', credentials);
 
-<<<<<<< HEAD
 //Gittins rpc server
 var gi_proto = grpc.load('../Proto files/buyGittinsIndex.proto').buygittinsindex;
 
-=======
->>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
 // functions converting the byte[] r_hash to HEX string and back
 
 function toHexString(byteArray) {
@@ -43,7 +40,6 @@ function toHexString(byteArray) {
 }
 function toByteArray(hexString) {
   var result = new Uint8Array(32); var n = hexString.length;
-console.log("toByteArray: length = "+n);
   for (var i = 0; i<n;i = i+2) {
     result[i >>> 1] = (parseInt("0x"+hexString.substring(i, i+2), 16));
   }
@@ -63,15 +59,9 @@ function orderGittinsIndex(call, callback) {
 
   {
     var memo = "GI("+gamma+","+ones+","+zeros+")";
-<<<<<<< HEAD
     client.addInvoice({
         "memo": memo,
         "value": 150
-=======
-    client.addinvoice({
-        "memo": memo,
-        "amt": 150
->>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
       }, function(err, response) {
         if (err != null) {
           callback(err,null)
@@ -84,11 +74,8 @@ function orderGittinsIndex(call, callback) {
 	  });
           console.log(memo + " " + rHash);
         }
-<<<<<<< HEAD
       });
-=======
-      }
->>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
+
   }
 }
 
@@ -116,24 +103,15 @@ function deliver(call, callback) {
                paid: true,
                gittins_index: gi
             });
-            console.log("GI = "+gi);
+            console.log(rHash + " paid. GI = "+gi);
           } else {
             callback(null, {
-<<<<<<< HEAD
                 paid:false, gittins_index:0
-=======
-                paid:false, gittins_index:null
->>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
             });
-            console.log("unpaid");
+            console.log(rHash + " unpaid");
 	  }
         }
-<<<<<<< HEAD
-      });
-=======
-      }
-    }
->>>>>>> d8fd95bc0c43c01c644a413c3d7b496244a146e6
+    });
   }
 }
 

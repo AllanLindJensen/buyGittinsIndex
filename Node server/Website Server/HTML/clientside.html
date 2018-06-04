@@ -77,7 +77,11 @@
 
 <div>
   <button class="waves-effect waves-light btn enabled" onclick="displayQRCode();">QR-code</button>
-  <button class="waves-effect waves-light btn enabled" onclick="cpClipBoard();">Copy to clipboard</button>
+  <button class="waves-effect waves-light btn enabled" onclick="cpClipBoard()">Copy to clipboard</button>
+  <button class="waves-effect waves-light btn enabled" onclick="clearFields()">Reset</button>
+</div>
+
+<div id="qrcode" align="center" style=margin-top:15px;>
 </div>
 
 <div class="card blue-grey lighten-1" id="result card">
@@ -87,9 +91,6 @@
     </div>
   </div>
 
-<div id="qrcode" align="center" style=margin-top:15px;>
-</div>
-
   <div class="container">
     <div class="section">
 
@@ -98,30 +99,30 @@
         <div class="col s12 m4">
           <div class="icon-block">
             <h2 class="center light-blue-text"><i class="material-icons">payment</i></h2>
-            <h5 class="center">Pay using bitcoin</h5>
+            <h5 class="center">Pay using test bitcoin</h5>
 
-            <p class="light">blah blah info on payment</p>
+            <p class="light">They are free!</p>
+            <p class="light">How to get them is explained on <a href="DanishLightning.dk:80">Danish Lightning</a>.</p>
           </div>
         </div>
 
         <div class="col s12 m4">
           <div class="icon-block">
             <h2 class="center light-blue-text"><i class="material-icons">info</i></h2>
-            <h5 class="center">What are you buying</h5>
+            <h5 class="center">You may wonder, what you have bought.</h5>
 
             <p class="light">
-              You may wonder, what a Gittins Index is. Google or
+               Google or
               <a href="https://sites.google.com/site/allanlindjensen/home/gittins-index">
                   look here</a>, but do you really care, as long as you get to spend your tBTCs?
             </p>
           </div>
         </div>
-
         <div class="col s12 m4">
           <div class="icon-block">
             <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-            <h5 class="center">How does it work</h5>
-            <p class="light">Or something.</p>
+            <h5 class="center">Or, seriously</h5>
+            <p class="light">The index is the fair price for a trial in units where an average failure is worth nought, and an average succes is worth unity.</p>
           </div>
         </div>
       </div>
@@ -129,20 +130,20 @@
     </div>
     <br><br>
   </div>
-
+ 
   <footer class="page-footer orange">
     <div class="container">
       <div class="row">
         <div class="col l6 s12">
-          <h5 class="white-text">final info on...?</h5>
-          <p class="grey-text text-lighten-4">info info info.</p>
+          <h5 class="white-text">more info on the Gittins Indices</h5>
+          <p class="grey-text text-lighten-4">In the computation it is assumed that a service is being tried, the value of which is a random variable with an unknown 
+distribution in the interval [0,1]. Each time the service is tried, the value of the result is either above or below the 0.5. This gives new knowledge about the distribution
+of the output. If a player has a very long horizon, indicated by a discount factor close to 100 per cent, it may be worth trying a new service, expecting to find a better
+one in due time in stead of staying with a rather good one. This balance depending upon an infinite future is found by computation of the Gittins Index.</p>
         </div>
       </div>
     </div>
   </footer>
-
-<!--  Scripts-->
-<!--TODO put in ../js/html-server-clientside.js-->
 
 </body>
 </html>

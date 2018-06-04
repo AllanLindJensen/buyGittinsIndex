@@ -57,7 +57,6 @@ var disableAllInputs = function()
     //TODO disable when asked for invoice.
 }
 
-
 var getNewInvoiceNumber = function()
 {
     var discountContent = document.getElementById("discount").value;
@@ -70,8 +69,9 @@ var insertInvoice = function(JSONResponse)
 {
     var responseObject = JSON.parse(JSONResponse);
     var cardText = document.getElementById("paymentText").value;
+    r_hash = responseObject.r_hash;
     document.getElementById("paymentText").value = responseObject.billText;
-    checkHashAndGetResult();
+    setTimeout(checkHashAndGetResult,4000);
 }
 
 var checkHashAndGetResult = function()
@@ -79,7 +79,6 @@ var checkHashAndGetResult = function()
     var discountContent = document.getElementById("discount").value;
     var successContent = document.getElementById("successes").value;
     var failureContent = document.getElementById("failures").value;
-    var r_hash = document.getElementById("paymentText").value;
     var paramsString = "?discount=" + discountContent + "&successes=" + successContent + "&failures=" + failureContent + "&r_hash=" + r_hash;
     httpGetAsyncFunction(URLTargets.checkBill, paramsString, parseResult);
 }
@@ -87,7 +86,10 @@ var checkHashAndGetResult = function()
 var parseResult = function(JSONResponse)
 {
     var responseObject = JSON.parse(JSONResponse);
-    document.getElementById("result").innerHTML = "paid: " + responseObject.paid + ", index:" + responseObject.gittins_index;
+    if (!responseObject.paid) {
+	setTimeout(checkHashAndGetResult,1000);
+	document.getElementById("result").innerHTML = "Your index is 0." + responseObject.gittins_index;
+    }
 }
 
 //********  async http functions
@@ -106,19 +108,16 @@ function httpGetAsyncFunction(URLTarget, parameters, callbackFunction)
 
 
 //*******global variables
+
 var URLTargets = {getBill: "./getbill/", checkBill: "./checkbill/"};
+var qrcode = null;
+var r_hash = ""; // string holding the r_hash as a HEX string
 
 /*
 * Generation of QR code
 */
 // from clientside.html: var scr = "../js/qrcode.js"
-var qrcode = new QRCode(document.getElementById("qrcode"), {
-	width : 400,
-	height : 400
-    });
-alert("qrcode var = "+JSON.stringify(qucode));
 
-var qrcode = null;
 
 function displayQRCode() {
     if (qrcode == null) {
@@ -141,3 +140,15 @@ function cpClipBoard() {
   else M.toast({html: 'Sorry, unable to copy!', displayLength: 2000});
   field.blur();
 }
+
+/*
+* Clear All Fields
+*/
+
+function clearFields() {
+    document.getElementById("discount").value = "";
+    document.getElementById("successes").value = "";
+    document.getElementById("failures").value = "";
+// eller har du en?
+}
+
