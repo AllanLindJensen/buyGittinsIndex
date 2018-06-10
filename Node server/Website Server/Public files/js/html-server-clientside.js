@@ -3,49 +3,73 @@
  */
 
 //********  Event listeners
+
 function userInputTrigger()
 {
     checkAllInputFields();
 }
 
-function buttonPressed()
+function buyPressed()
 {
-    getNewInvoiceNumber();
+    getNewInvoice();
 }
 
+
+function resetPressed() 
+{
+    clearFields();
+}
+
+function QRCodePressed()
+{
+  displayQRCode();
+}
+
+function cpPressed()
+{
+  cpClipBoard();
+}
 
 //********  Main functions
 /**
  * 
  */
+
+/*
+* Clear All Fields, stop asking
+*/
+
+var clearFields = function()
+{
+    document.getElementById("discount").value = "";
+    document.getElementById("successes").value = "";
+    document.getElementById("failures").value = "";
+    document.getElementById("btn_buy").disabled = true;
+    continue_checking_bill = false;
+    $('#paymentText').value = "";
+    setVisibility(false,false);
+}
+
+
 var checkAllInputFields = function()
 {
     var discountContent = document.getElementById("discount").value;
     var successContent = document.getElementById("successes").value;
     var failureContent = document.getElementById("failures").value;
-    var button = document.getElementById("orderButton");
+    var button = document.getElementById("btn_buy");
     //Check that the user input constitutes values that can be calculated.
-    if (discountContent != null && discountContent > 0 && discountContent <= 99
-        && successContent != null && successContent >= 0 && successContent <= 99
-        && failureContent != null && failureContent >= 0 && failureContent <= 99)
+    if (discountContent != "" && discountContent > 0 && discountContent <= 99
+        && successContent != "" && successContent >= 0 && successContent <= 100
+        && failureContent != "" && failureContent >= 0 && failureContent <= 100)
     {
-        var buttonClass = button.className;
-        if (buttonClass.indexOf("disabled") != -1) 
-        {
-            buttonClass = buttonClass.replace("disabled", "");
-            button.className = buttonClass;
-        }
+        button.disabled = false;
     } 
     else 
     {
-        var buttonClass = button.className;
-        if (buttonClass.indexOf("disabled") == -1)
-        {
-            var buttonClass = buttonClass + " disabled";
-            button.className = buttonClass;
-        }
+        button.disabled = true;
     }
 }
+
 
 var onInvoiceChange = function()
 {
@@ -57,11 +81,11 @@ var disableAllInputs = function()
     //TODO disable when asked for invoice.
 }
 
-var getNewInvoiceNumber = function()
+var getNewInvoice = function()
 {
-    var discountContent = document.getElementById("discount").value;
-    var successContent = document.getElementById("successes").value;
-    var failureContent = document.getElementById("failures").value;
+    discountContent = document.getElementById("discount").value;
+    successContent = document.getElementById("successes").value;
+    failureContent = document.getElementById("failures").value;
     httpGetAsyncFunction(URLTargets.getBill, "?discount=" + discountContent + "&successes=" + successContent + "&failures=" + failureContent, insertInvoice);
 }
 
@@ -71,14 +95,13 @@ var insertInvoice = function(JSONResponse)
     var cardText = document.getElementById("paymentText").value;
     r_hash = responseObject.r_hash;
     document.getElementById("paymentText").value = responseObject.billText;
+    setVisibility(true,false);
+    continue_checking_bill = true;
     setTimeout(checkHashAndGetResult,4000);
 }
 
 var checkHashAndGetResult = function()
 {
-    var discountContent = document.getElementById("discount").value;
-    var successContent = document.getElementById("successes").value;
-    var failureContent = document.getElementById("failures").value;
     var paramsString = "?discount=" + discountContent + "&successes=" + successContent + "&failures=" + failureContent + "&r_hash=" + r_hash;
     httpGetAsyncFunction(URLTargets.checkBill, paramsString, parseResult);
 }
@@ -86,9 +109,13 @@ var checkHashAndGetResult = function()
 var parseResult = function(JSONResponse)
 {
     var responseObject = JSON.parse(JSONResponse);
-    if (!responseObject.paid) {
-	setTimeout(checkHashAndGetResult,1000);
+    if (responseObject.paid) {
 	document.getElementById("result").innerHTML = "Your index is 0." + responseObject.gittins_index;
+        setVisibility(false,true);
+        return;
+    }
+    if (continue_checking_bill) {
+        setTimeout(checkHashAndGetResult,1000);
     }
 }
 
@@ -112,6 +139,9 @@ function httpGetAsyncFunction(URLTarget, parameters, callbackFunction)
 var URLTargets = {getBill: "./getbill/", checkBill: "./checkbill/"};
 var qrcode = null;
 var r_hash = ""; // string holding the r_hash as a HEX string
+var continue_checking_bill = false; // stop checking the bill when reset is pressed
+
+var discountContent, successContent, failureContent; // hold when bill is ordered
 
 /*
 * Generation of QR code
@@ -120,16 +150,14 @@ var r_hash = ""; // string holding the r_hash as a HEX string
 
 
 function displayQRCode() {
-    if (qrcode == null) {
-        qrcode = new QRCode(document.getElementById("qrcode"), {
-	    width : 400, height : 400
-        });
-    }
-    qrcode.makeCode(document.getElementById("paymentText").value);
+	var url = QRCode.generatePNG($('#paymentText').val(), [{ecclevel:"ecclevel-M"}]);
+        document.getElementById("qr-division").style.display = 'block';
+	$('#qr-division').html('<img src="' + url + '">'+ "<br>Thanx to Kang Seonghoon, Korea.");
+
 }
 
 /*
-* Copy bill to clipboard
+ * Copy bill to clipboard
 */
 
 function cpClipBoard() {
@@ -142,13 +170,23 @@ function cpClipBoard() {
 }
 
 /*
-* Clear All Fields
+ * Handle visibility
 */
 
-function clearFields() {
-    document.getElementById("discount").value = "";
-    document.getElementById("successes").value = "";
-    document.getElementById("failures").value = "";
-// eller har du en?
-}
+function setVisibility(show_bill_section,show_result_section) {
+  var paymentDiv = document.getElementById("payment division");
+  var resultDiv = document.getElementById("result card");
+  if (show_bill_section) {
+    paymentDiv.style.display = 'block';
+    document.getElementById("qr-division").style.display = 'none'; //hide until generated with the new bill.
+  } else {
+    paymentDiv.style.display = 'none';
+  }
+  if (show_result_section) {
+    resultDiv.style.display = 'block';
+  } else {
+    resultDiv.style.display = 'none';
+  }
+}    
+    
 

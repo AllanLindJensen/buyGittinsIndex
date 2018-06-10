@@ -47,6 +47,7 @@ module.exports = {
                 }
             }
             else {
+console.log(filePath);
                 response.writeHead(200, { 'Content-Type': contentType });
                 response.end(content, 'utf-8');
             }

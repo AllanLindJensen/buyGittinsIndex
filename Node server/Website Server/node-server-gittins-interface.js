@@ -18,7 +18,7 @@ var setClient = function()
 {
     if (client == null)
     {
-        console.log("first setClient call - typeof gi_proto.BuyGittinsIndex: " + gi_proto.BuyGittinsIndex);
+        // console.log("first setClient call - typeof gi_proto.BuyGittinsIndex: " + gi_proto.BuyGittinsIndex);
         client = new gi_proto.BuyGittinsIndex(gittinsHost,
                         grpc.credentials.createInsecure());
     }
