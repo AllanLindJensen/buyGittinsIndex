@@ -87,7 +87,7 @@ function deliver(call, callback) {
   ones = call.request.successes;
   zeros = call.request.failures;
   var rHash = call.request.r_hash;
-  if (gamma <0 || gamma > .999 || ones < 0 || ones >99 || zeros < 0 || zeros > 99) {
+  if (gamma <0 || gamma > .999 || ones < 0 || ones >100 || zeros < 0 || zeros > 100) {
     callback("params out of range",null);
   } else {
     client.lookupInvoice({
@@ -108,7 +108,6 @@ function deliver(call, callback) {
             callback(null, {
                 paid:false, gittins_index:0
             });
-            console.log(rHash + " unpaid");
 	  }
         }
     });

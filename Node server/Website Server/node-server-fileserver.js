@@ -31,26 +31,28 @@ module.exports = {
                 contentType = 'audio/wav';
                 break;
         }
-
-        fs.readFile(filePath, function(error, content) {
-            if (error) {
-                if(error.code == 'ENOENT'){
-                    fs.readFile('./Public\ files/404.html', function(error, content) {
-                        response.writeHead(200, { 'Content-Type': contentType });
-                        response.end(content, 'utf-8');
-                    });
-                }
-                else {
-                    response.writeHead(500);
-                    response.end('Sorry, check with the site admin for error: '+error.code+' ..\n');
-                    response.end(); 
-                }
-            }
-            else {
-console.log(filePath);
-                response.writeHead(200, { 'Content-Type': contentType });
-                response.end(content, 'utf-8');
-            }
-        });
+	var n = filePath.lastIndexOf("/");
+        var localPath = filePath.substr(0, n);
+        if (localPath =="./Public files//css" || localPath == "./Public files//js") {
+	        fs.readFile(filePath, function(error, content) {
+	            if (error) {
+	                if(error.code == 'ENOENT'){
+        	            fs.readFile('./Public\ files/404.html', function(error, content) {
+        	                response.writeHead(200, { 'Content-Type': contentType });
+        	                response.end(content, 'utf-8');
+        	            });
+        	        }
+        	        else {
+        	            response.writeHead(500);
+        	            response.end('Sorry, check with the site admin for error: '+error.code+' ..\n');
+        	            response.end(); 
+        	        }
+        	    }
+        	    else {
+        	        response.writeHead(200, { 'Content-Type': contentType });
+        	        response.end(content, 'utf-8');
+        	    }
+        	});
+	}
     }
 };
