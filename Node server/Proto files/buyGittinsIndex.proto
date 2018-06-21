@@ -23,7 +23,13 @@ service BuyGittinsIndex {
 	// The bill is considered paid, iff number of successes
 	// differs from zero.
 
-	rpc Deliver(R_HASH) returns (Result) {}
+	rpc CheckPayment(R_HASH) returns (Result) {}
+
+	// an infinite stream with the Gittins indices of the paid bills
+	// pass to the customer (remove from list of open connections) and
+	// close connection to customer
+
+	rpc AwaitPayment(R_HASH) returns (GittinsIndex) {}
 }
 
 message Order {
@@ -39,14 +45,13 @@ message Bill {
 
 message R_HASH {
   string r_hash = 1;
-  // When looking up the bill, the gittins_server can find the data.
-  // But it is much easier just to send it again.
-  int32 discount = 3;
-  int32 successes = 4;
-  int32 failures = 5; 
 }
 
 message Result {
   bool paid = 1;
   int32 gittins_index = 2;
-}  
+}
+
+message GittinsIndex {
+  int32 gittins_index = 1;
+}

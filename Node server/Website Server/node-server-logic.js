@@ -9,10 +9,10 @@ var gittinsServerModule = require('./node-server-gittins-interface');
 var htmlModule = require('./node-server-HTML')
 var fileServer = require('./node-server-fileserver');
 
-var gittinsHost = '0.0.0.0:14203'; //'176.21.113.33';
+var gittinsHost = "0.0.0.0";
 var gittinsPort = "14203";
 
-var URLTargets = {getBill: "getbill", checkBill: "checkbill"};
+var URLTargets = {getBill: "getbill", awaitPayment: "awaitpayment", checkBill: "checkbill"};
 
 module.exports = {
     /**
@@ -54,6 +54,9 @@ var routingLogic = function(pathNames)
             case URLTargets.getBill:
                 return getBillFromGittins;
                 break;
+	    case URLTargets.awaitPayment:
+		return awaitResultFromGittins;
+		break;
             case URLTargets.checkBill:
                 return getResultIfReady;
                 break;
@@ -91,24 +94,26 @@ var getResultIfReady = function(URLParams, response)
 {
     var paramsMap = url.parse(URLParams.path, true);
     var r_hashInput = paramsMap.query.r_hash.toString();
-    var discountInput = parseInt(paramsMap.query.discount);
-    var successesInput = parseInt(paramsMap.query.successes);
-    var failuresInput = parseInt(paramsMap.query.failures);
-    //If the hashinput is ok, but the numbers are missing, input 0 0 0.
-    if (!(r_hashInput == "") && (discountInput == "NaN" || successesInput == "NaN" || failuresInput == "NaN"))
-    {
-        discountInput = 0;
-        successesInput = 0;
-        failuresInput = 0;
-        gittinsServerModule.setClient(gittinsHost + ":" + gittinsPort);
-        gittinsServerModule.CheckBillAndGetResult(r_hashInput, discountInput, successesInput, failuresInput, sendJSONResponse, response);
-    }
-    else 
+    if (r_hashInput != "")
     {
         gittinsServerModule.setClient(gittinsHost + ":" + gittinsPort);
-        gittinsServerModule.CheckBillAndGetResult(r_hashInput, discountInput, successesInput, failuresInput, sendJSONResponse, response);
+        gittinsServerModule.checkBillAndGetResult(r_hashInput, sendJSONResponse, response);
     }
 }
+
+var awaitResultFromGittins = function(URLParams, response)
+{
+    var paramsMap = url.parse(URLParams.path, true);
+    var r_hashInput = paramsMap.query.r_hash.toString();
+
+    if (r_hashInput != "")
+    {
+        gittinsServerModule.setClient(gittinsHost + ":" + gittinsPort);
+        gittinsServerModule.awaitPayment(r_hashInput, sendJSONResponse, response);
+console.log("awaitResultFromGittins " + r_hashInput);
+    }
+}
+
 /**
  * Function for sending a response.
  * @param {string} content The content to send to client.

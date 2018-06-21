@@ -14,7 +14,6 @@ function buyPressed()
     getNewInvoice();
 }
 
-
 function resetPressed() 
 {
     clearFields();
@@ -22,12 +21,17 @@ function resetPressed()
 
 function QRCodePressed()
 {
-  displayQRCode();
+    displayQRCode();
 }
 
 function cpPressed()
 {
-  cpClipBoard();
+    cpClipBoard();
+}
+
+function checkBill()
+{
+    checkHashAndGetResult();
 }
 
 //********  Main functions
@@ -41,7 +45,7 @@ function cpPressed()
 
 var clearFields = function()
 {
-    document.getElementById("discount").value = "";
+    document.getElementById("discount").value = ""; 
     document.getElementById("successes").value = "";
     document.getElementById("failures").value = "";
     document.getElementById("btn_buy").disabled = true;
@@ -49,7 +53,6 @@ var clearFields = function()
     $('#paymentText').value = "";
     setVisibility(false,false);
 }
-
 
 var checkAllInputFields = function()
 {
@@ -70,12 +73,6 @@ var checkAllInputFields = function()
     }
 }
 
-
-var onInvoiceChange = function()
-{
-    checkHashAndGetResult();
-}
-
 var disableAllInputs = function()
 {
     //TODO disable when asked for invoice.
@@ -83,9 +80,9 @@ var disableAllInputs = function()
 
 var getNewInvoice = function()
 {
-    discountContent = document.getElementById("discount").value;
-    successContent = document.getElementById("successes").value;
-    failureContent = document.getElementById("failures").value;
+    var discountContent = document.getElementById("discount").value;
+    var successContent = document.getElementById("successes").value;
+    var failureContent = document.getElementById("failures").value;
     httpGetAsyncFunction(URLTargets.getBill, "?discount=" + discountContent + "&successes=" + successContent + "&failures=" + failureContent, insertInvoice);
 }
 
@@ -96,27 +93,38 @@ var insertInvoice = function(JSONResponse)
     r_hash = responseObject.r_hash;
     document.getElementById("paymentText").value = responseObject.billText;
     setVisibility(true,false);
-    continue_checking_bill = true;
-    setTimeout(checkHashAndGetResult,4000);
+    awaitPayment();
 }
 
 var checkHashAndGetResult = function()
 {
-    var paramsString = "?discount=" + discountContent + "&successes=" + successContent + "&failures=" + failureContent + "&r_hash=" + r_hash;
-    httpGetAsyncFunction(URLTargets.checkBill, paramsString, parseResult);
+    var paramsString = "?r_hash=" + r_hash;
+    httpGetAsyncFunction(URLTargets.checkBill, paramsString, parseCheckBillResult);
 }
 
-var parseResult = function(JSONResponse)
+var parseCheckBillResult = function(JSONResponse)
 {
     var responseObject = JSON.parse(JSONResponse);
     if (responseObject.paid) {
 	document.getElementById("result").innerHTML = "Your index is 0." + responseObject.gittins_index;
         setVisibility(false,true);
         return;
+    } else {
+      M.toast('The bill is still unsettled', 2000);
     }
-    if (continue_checking_bill) {
-        setTimeout(checkHashAndGetResult,1000);
-    }
+}
+
+var awaitPayment = function()
+{
+    var paramsString = "?r_hash=" + r_hash;
+    httpGetAsyncFunction(URLTargets.awaitPayment, paramsString, parseAwaitResult);
+}
+
+var parseAwaitResult = function(JSONResponse)
+{
+    var responseObject = JSON.parse(JSONResponse);
+    document.getElementById("result").innerHTML = "Your index is 0." + responseObject.gittins_index;
+    setVisibility(false,true);
 }
 
 //********  async http functions
@@ -133,39 +141,39 @@ function httpGetAsyncFunction(URLTarget, parameters, callbackFunction)
     xmlHttp.send(null);
 }
 
-
 //*******global variables
 
-var URLTargets = {getBill: "./getbill/", checkBill: "./checkbill/"};
-var qrcode = null;
+var URLTargets = {getBill: "./getbill/", awaitPayment: "./awaitpayment/", checkBill: "./checkbill/"};
 var r_hash = ""; // string holding the r_hash as a HEX string
-var continue_checking_bill = false; // stop checking the bill when reset is pressed
-
-var discountContent, successContent, failureContent; // hold when bill is ordered
 
 /*
 * Generation of QR code
 */
 // from clientside.html: var scr = "../js/qrcode.js"
 
-
-function displayQRCode() {
+function displayQRCode() 
+{
 	var url = QRCode.generatePNG($('#paymentText').val(), [{ecclevel:"ecclevel-M"}]);
         document.getElementById("qr-division").style.display = 'block';
 	$('#qr-division').html('<img src="' + url + '">'+ "<br>Thanx to Kang Seonghoon, Korea.");
-
 }
 
 /*
  * Copy bill to clipboard
 */
 
-function cpClipBoard() {
+function cpClipBoard() 
+{
   var field = document.getElementById("paymentText");
   field.select();
   var ok = document.execCommand('copy');
-  if (ok) M.toast({html: 'Copied: ' + document.getElementById("paymentText").value, displayLength: 1000})
-  else M.toast({html: 'Sorry, unable to copy!', displayLength: 2000});
+  if (ok) 
+  {
+     M.toast({html: 'Bill Copied.', displayLength: 1000});
+  } else 
+  {
+    M.toast({html: 'Sorry, unable to copy!', displayLength: 2000});
+  }
   field.blur();
 }
 
@@ -173,7 +181,8 @@ function cpClipBoard() {
  * Handle visibility
 */
 
-function setVisibility(show_bill_section,show_result_section) {
+function setVisibility(show_bill_section,show_result_section) 
+{
   var paymentDiv = document.getElementById("payment division");
   var resultDiv = document.getElementById("result card");
   if (show_bill_section) {

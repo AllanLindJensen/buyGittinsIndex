@@ -86,12 +86,16 @@
 	<img>
   </div>
 
+  <br>
+  <div>
+    <button class="waves-effect waves-light btn" title = "Check for payment. In case the automatic system fails" onclick="checkBill()">Panic Button</button>
+  </div>
 </div> <!-- end of payment division -->
 
 <div class="card blue-grey lighten-1" id="result card">
     <div class="card-content white-text">
       <span class="card-title">Result</span>
-      <p class="flow-text" id="result">Enter your query above, to recieve an invoice.</p>
+      <p class="flow-text" id="result"></p>
     </div>
 </div> <!-- end og result card -->
 
@@ -105,7 +109,8 @@
             <h2 class="center light-blue-text"><i class="material-icons">payment</i></h2>
             <h5 class="center">Pay using test bitcoin</h5>
             <p class="light">They are free!</p>
-            <p class="light">How to get tBTC is explained on <a href="DanishLightning.dk">Danish Lightning</a>.</p>
+            <p class="light">How to get tBTC is explained on <a href="http://DanishLightning.dk">Danish Lightning</a>.</p>
+	    <p class="light">It is probably neccessary to open a channel to the node: Danish Lightning. Follow the link above</p>
           </div>
         </div>
 
@@ -137,7 +142,6 @@
       </div>
 
     </div>
-    <br><br>
 </div>
 
 <h5 style="  background:#a0a0a0; color:aqua; padding: 2em; text-align:center;">

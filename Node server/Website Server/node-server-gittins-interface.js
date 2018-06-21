@@ -31,7 +31,7 @@ var getNewBill = function(discountInput, successesInput, failuresInput, JSONcall
         successes: successesInput, 
         failures: failuresInput
     };
-    var bill = client.OrderGittinsIndex(order, function(err, response) {
+    var bill = client.orderGittinsIndex(order, function(err, response) {
         if (err) 
         {
             console.log("getNewBill err: " + err);
@@ -44,15 +44,12 @@ var getNewBill = function(discountInput, successesInput, failuresInput, JSONcall
     });
 }
 
-var CheckBillAndGetResult = function(r_hashInput, discountInput, successesInput, failuresInput, JSONcallback, httpResponse)
+var checkBillAndGetResult = function(r_hashInput, JSONcallback, httpResponse)
 {
     var r_hashObject = {
-        r_hash: r_hashInput,
-        discount: discountInput,
-        successes: successesInput,
-        failures: failuresInput
+        'r_hash': r_hashInput,
     };
-    client.Deliver(r_hashObject, function(err, response) {
+    client.checkPayment(r_hashObject, function(err, response) {
         if (err) 
         {
             console.log("getResult err: " + err);
@@ -65,6 +62,26 @@ var CheckBillAndGetResult = function(r_hashInput, discountInput, successesInput,
     })
 }
 
+var awaitPayment = function(r_hashInput, JSONcallback, httpResponse)
+{
+    var r_hashObject = {
+        'r_hash': r_hashInput
+    };
+console.log("tracking " + r_hashInput);
+    client.awaitPayment(r_hashObject, function(err, response) {
+        if (err) 
+        {
+            console.log("awaitPayment err: " + err);
+        } 
+        else
+        {
+            var JSONobject = {"gittins_index": response.gittins_index };
+            JSONcallback(JSONobject, httpResponse);            
+        }
+    })
+}
+
 exports.getNewBill = getNewBill;
 exports.setClient = setClient;
-exports.CheckBillAndGetResult = CheckBillAndGetResult;
+exports.checkBillAndGetResult = checkBillAndGetResult;
+exports.awaitPayment = awaitPayment;

@@ -1,115 +1,212 @@
+// Connecting to lnd (using Example on accessing API)
+
+var fs = require('fs');
 var grpc = require('grpc');
+var GICompute = require('./compute_index');
+var life_span = 3600; // bills expire in 1 hour
+var waitingList = []; // list of bills awating payment
+
+process.env.GRPC_SSL_CIPHER_SUITES = 'HIGH+ECDSA'
+
+var m = fs.readFileSync('/home/allan/.lnd/admin.macaroon');
+var macaroon = m.toString('hex');
+
+// build meta data credentials
+var metadata = new grpc.Metadata()
+metadata.add('macaroon', macaroon)
+var macaroonCreds = grpc.credentials.createFromMetadataGenerator((_args, callback) => {
+  callback(null, metadata);
+});
+
+// build ssl credentials using the cert the same as before
+var lndCert = fs.readFileSync("/home/allan/.lnd/tls.cert");
+var sslCreds = grpc.credentials.createSsl(lndCert);
+
+// combine the cert credentials and the macaroon auth credentials
+// such that every call is properly encrypted and authenticated
+var credentials = grpc.credentials.combineChannelCredentials(sslCreds, macaroonCreds);
+
+// Pass the crendentials when creating a channel
+var lnrpcDescriptor = grpc.load('../Proto files/lnd_rpc.proto');
+var lnrpc = lnrpcDescriptor.lnrpc;
+var client = new lnrpc.Lightning('localhost:10009', credentials);
+
+//Gittins rpc server
 var gi_proto = grpc.load('../Proto files/buyGittinsIndex.proto').buygittinsindex;
+var awaitList = []; // list of processes awaiting confirmation of payment
+  // Added by call to awaitPayment
+  // Deleted by a) payment, b) checkPayment c) every day old ones
+  // {time: longint, RHash: string, caller: streamObject}
+
+// functions converting the byte[] r_hash to HEX string and back
+
+function toHexString(byteArray) {
+  return Array.prototype.map.call(byteArray, function(byte) {
+    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+  }).join('');
+}
+
+function toByteArray(hexString) {
+  var result = new Uint8Array(32); var n = hexString.length;
+  for (var i = 0; i<n;i = i+2) {
+    result[i >>> 1] = (parseInt("0x"+hexString.substring(i, i+2), 16));
+  }
+  return result;
+}
 
 /**
- * getBill RPC method.
+ * GetBill RPC method.
  */
 function orderGittinsIndex(call, callback) {
-  console.log('order GI('+call.request.discount+','+call.request.successes+','+call.request.failures+')');
-  callback(null, {billText: 'lntb17u1pds5mrnpp5futgff358jg89s2890jh2ajcapsavkg9undxd95rz60dc6m2dk3qdpzxysy2umswfjhxum0yppk76twypgxzmnwvycqp2l6pl66cas74jjfkmzn68y9s84vfz3xsem3sdfrle4m8r0wqjgwmj87he3va8xc88atd8zvex66vlrjr6a282xm8k04hv2l7kr8yqt2cqzmrhl2',
-    r_hash: 'f20918876cd11317246e3dd2700bd41a2c25b3b37401412ea28d3dc3d433ecc4'});
+  gamma = call.request.discount;
+  ones = call.request.successes;
+  zeros = call.request.failures;
+  if (gamma <1 || gamma > 100 || ones < 0 || ones >100 || zeros < 0 || zeros > 100) {
+    callback("params out of range",{});
+  } else {
+    var memo = "GI("+gamma+","+ones+","+zeros+")";
+    client.addInvoice({
+        "memo": memo,
+        "value": 150,
+        "expiry": life_span
+        }, function(err, response) {
+        if (err != null) {
+          callback(err,{})
+        } else {
+          //we have a sale and a bill
+          var rHash = toHexString(response.r_hash);
+	  callback(null, {
+	    billText: response.payment_request,
+    	    r_hash: rHash
+	  });
+          console.log(memo + " " + rHash);
+        }
+    });
+  }
 }
 
 /**
- * deliver RPC method.
+ * CheckPayment RPC method.
  */
-function deliver(call, callback) {
-  gamma = call.request.discount * 0.01;
-  ones = call.request.successes;
-  zeros = call.request.failures; 
-  var b = (ones !=0); var gi;
-  console.log("? " + call.request.r_hash);
-  if (b) {
-    gi = Math.round(gittinsBinary()*10000);
-    console.log("paid, GI = " + gi);
-  } else {
-    gi = 0;
-    console.log("unpaid");
-  }
-  callback(null, {paid: b, gittins_index: gi});
+function checkPayment(call, callback) {
+  var rHashText = call.request.r_hash;
+  var rHash = toByteArray(rHashText);
+  client.lookupInvoice({
+        r_hash: rHash
+      }, function(err, response) {
+        if (err != null) {
+          callback(err,{})
+        } else {
+          if (response.settled) {
+            var memo = response.memo;
+            var GI = computeGI(memo);
+            console.log(new Date().toUTCString() + " paid " + rHashText + " for " + memo + " = 0." + GI);
+            callback(null,{paid:true, gittins_index: GI});
+// TODO remove from list. if it is on it.
+          } else {
+            callback(null, {
+                paid:false, gittins_index:0
+            });
+	  }
+        }
+  });
 }
 
 /*
- * variables and constants to computation of 2D Beta Distribution Gittins Index
+ * Wait for the bill to be paid. Put it on hte waitingList
  */
 
-var gamma, ones, zeros;
-var epsilon = 1E-5;
-var zip = 1E-9;
-
-/*
- * Methods for the computation
- */
-
-function minInt(a,b) {
-  if (a<= b) {return a;} else {return b;}
+function awaitPayment(call, callback) {
+  var rHash = call.request.r_hash; 
+  var i = searchHashInWaitingList(rHash);
+console.log(" i = " + i + ", rHash = " + rHash);
+  if (i == -1) 
+  {
+    waitingList.push({
+        time: Date.now(),
+        RHASH: rHash,
+        callBack: callback
+    });
+    console.log(new Date().toUTCString() + " Added to waiting list " + rHash);
+  }
 }
 
-function competingBinary(N,p) {
-        
-        // gam is the discount, assumed 0 < gam < 1
-        // N >= a+b is the look-ahead
-        // p is the probability of success of the competingTernary Bandit
-  var j1,j2,i;
-  var ret = p/(1-gamma);
-  var iLim = minInt(Math.floor((p*(N+2))-1),N);
-  var k=(1-gamma)*(N+2);
-  var A = new Array(N+1);
-//      System.out.printf("a = %d,b = %d, N = %d, og iLim = %d%n",a,b,N,iLim);
-  for (i = 0; i <= iLim; i++) { A[i] = ret;}
-  for(i = iLim+1; i <= N; i++) {
-    A[i] = 1.0*(i+1)/k;
-//      System.out.printf("Sæt A[i] lig %.4f",1.0*(i+1)/(N+2)); System.out.println();
-  }
-//      for (i=0;i<=N;i++){System.out.print(String.valueOf(A[i])+" ");};
-//      System.out.println();
-        //This is the expected best outcome after N tests
-        //Now the best expected outcome is computed backwards in time
-  var l = ones+zeros; //returns are computed from N (set above) down to l
-  for (var j = N-1; j >= l;j--) {
-    j1 = j+1; j2 = j+2;
-    for (i = 0;i<=j;i++) {
-//          System.out.printf("i = %d, og yields er %f og %f%n",
-//              i,(i+1)*(1+A[i+1])/j2,(j1-i)*A[i]/j2);
-      A[i] = Math.max(ret,
-              ((1+gamma*A[i+1])*(i+1)+gamma*A[i]*(j1-i))/j2);
+//when LND informs that a bill has been paid
+function billPaid(invoice) {
+    var memo = invoice.memo;
+    var paidHash = toHexString(invoice.r_hash);
+    if (memo.substring(0,3) != "GI(") 
+    {
+      return; //not invoice for a Gittins Index
     }
-  }
-//      for (i=0;i<=N;i++){System.out.print(String.valueOf(A[i])+" ");};
-//      System.out.println();
-  return A[ones];
+    var paidHash = toHexString(invoice.r_hash);
+    var i = searchHashInWaitingList(paidHash);
+
+    if (i == -1) return;  //not on the waitingList
+    var gi = computeGI(memo);
+    waitingList[i].callBack(null,{gittins_index: gi});
+    console.log(new Date().toUTCString() + " delivered " + paidHash + " for " + memo + " = 0." + gi);
+    waitingList.splice(i,1); // remove from waitingList
 }
 
-function GN(gam, N){
-  var p1 = 1.0*(ones+1)/(ones+zeros+2); var p2 = 1.0;
-  var rate = 1 - gam;
-  var y; var p;
-  while (p2 - p1 > epsilon) {
-    p = (p1+p2)*0.5;
-    y = competingBinary(N,p)*rate;
-    if (y>p+zip) {p1 = p;} else {p2 = p;}
-  }
-  return (p1+p2)*0.5;
+// functions regarding the waitingList
+
+function searchHashInWaitingList(RHash) {
+  return waitingList.findIndex( el => {
+        return (el.RHASH == RHash);
+    });
 }
 
-function gittinsBinary(){
-  var N0 = Math.round((6*Math.pow(1/(1-gamma),0.72)));
-  var deltaN = Math.floor(N0/2);
-  var N = ones+zeros + N0;
-  var p1 = 0.0; var p2 = GN(gamma,N);
-  while ((p2 - p1 > 0.5*epsilon) && (N < 1000000)) {
-    N = N + deltaN;
-    p1 = p2; p2 = GN(gamma,N);
-  }
-  return p2;
-}    
+  //TODO
+function sanatizeWaitingList() {
+   // waitingList.sort();
+   // var lim = Date.now() - 4000;
+   // var i = waitingList.findIndex( el => {return (el.time > lim)} );
+   // if (i >= 0) {
+   // how many are there???
+   // waitingList.splice(0, ?? );
+}
 
+//compute the Gittins index from the memo of the bill
+
+function computeGI(memo) { 
+    var pos1 = memo.indexOf(',');
+    var discount = parseInt(memo.substring(3,pos1));
+    var pos2 = memo.indexOf(',',pos1+1);
+    var ones = parseInt(memo.substring(pos1 + 1, pos2));
+    var zeros = parseInt(memo.substring(pos2 + 1, memo.indexOf(")")));
+    var gi = 0;
+    if ( !isNaN(discount)  && discount > 0 && discount <= 99
+        && !isNaN(ones) && ones >= 0 && ones <= 100
+        && !isNaN(zeros) && zeros >= 0 && zeros <= 100) {
+      gi = GICompute.gittinsBinary(discount,ones,zeros);
+    }
+    return gi;
+}
+
+// open the server
 
 function main() {
   var server = new grpc.Server();
-  server.addService(gi_proto.BuyGittinsIndex.service, {orderGittinsIndex: orderGittinsIndex, deliver: deliver});
+  server.addService(gi_proto.BuyGittinsIndex.service, {orderGittinsIndex: orderGittinsIndex, awaitPayment: awaitPayment, checkPayment: checkPayment});
   server.bind('0.0.0.0:14203', grpc.ServerCredentials.createInsecure());
   server.start();
+  // subscribe to paid invoices
+  var lnd = client.subscribeInvoices({});
+  lnd.on('data', billPaid);
+  lnd.on('end', function() {
+    // The server has finished sending
+    console.log(new Date().toUTCString() + " LND stops:");
+  });
+  lnd.on('error', function(err) {
+    console.log(new Date().toUTCString() + " ERR: " + err);
+  });
+  lnd.on('status', function(status) {
+    // Process status
+    console.log(new Date().toUTCString() + "Current status: " + JSON.stringify(status));
+  });
+  setInterval(sanatizeWaitingList, 24*3600000); //once a day
+  console.log(new Date().toUTCString() + " Initialization complete");
 }
 
 main();
